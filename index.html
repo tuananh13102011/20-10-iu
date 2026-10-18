@@ -1,0 +1,701 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vũ Trụ 20-10 💗</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow: hidden;
+    height: 100vh;
+    background:
+        radial-gradient(ellipse at 50% 50%, #21134b 0%, #0c0925 55%, #02010b 100%);
+    font-family: "Segoe UI", sans-serif;
+    color: white;
+}
+
+/* NỀN VŨ TRỤ */
+#universe {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+/* TIÊU ĐỀ */
+.title {
+    position: fixed;
+    z-index: 3;
+    top: 25px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    padding: 0 12px;
+    color: #ffb9e4;
+    font-size: clamp(24px, 5vw, 42px);
+    font-weight: bold;
+    text-shadow:
+        0 0 10px #ff40c8,
+        0 0 25px #ff40c8,
+        0 0 45px #a44dff;
+    animation: titleGlow 2s infinite alternate;
+}
+
+@keyframes titleGlow {
+    from {
+        text-shadow: 0 0 10px #ff40c8;
+    }
+    to {
+        text-shadow:
+            0 0 20px #ff40c8,
+            0 0 45px #a44dff,
+            0 0 65px #ff70d6;
+    }
+}
+
+/* TRÁI TIM PHÁT SÁNG */
+.heart {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    transform: translate(-50%, -50%);
+    font-size: clamp(100px, 22vw, 190px);
+    color: #ff5fc8;
+    filter:
+        drop-shadow(0 0 10px #ff35b9)
+        drop-shadow(0 0 25px #ff35b9)
+        drop-shadow(0 0 50px #b32dff);
+    animation: heartBeat 1.5s infinite ease-in-out;
+    pointer-events: none;
+}
+
+@keyframes heartBeat {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.12);
+    }
+}
+
+/* ẢNH VÀ CHỮ BAY */
+.floating-item {
+    position: fixed;
+    z-index: 4;
+    bottom: -180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    animation: flyUp linear forwards;
+    pointer-events: none;
+}
+
+.floating-item img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 18px;
+    border: 2px solid #ffb5e8;
+    box-shadow:
+        0 0 12px #ff59cb,
+        0 0 25px #d34bff;
+}
+
+.floating-text {
+    white-space: nowrap;
+    font-size: 22px;
+    font-weight: bold;
+    color: #ffb8e8;
+    text-align: center;
+    text-shadow:
+        0 0 6px #ff39c6,
+        0 0 15px #ff39c6,
+        0 0 25px #a84dff;
+    animation: textGlow 1.5s infinite alternate;
+}
+
+@keyframes textGlow {
+    from {
+        opacity: .8;
+        transform: scale(1);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1.08);
+    }
+}
+
+@keyframes flyUp {
+    0% {
+        transform: translateY(0) rotate(-5deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    50% {
+        transform: translateY(-55vh) rotate(5deg);
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-125vh) rotate(-5deg);
+        opacity: 0;
+    }
+}
+
+/* NÚT BẤM */
+.music-button {
+    position: fixed;
+    z-index: 10;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 13px 24px;
+    border: 1px solid #ffb9e9;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #ff42a9, #963dff);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 20px #ff42a9;
+}
+
+.music-button:hover {
+    box-shadow: 0 0 35px #ff42e8;
+}
+
+/* ĐIỆN THOẠI */
+@media (max-width: 600px) {
+    .floating-item img {
+        width: 78px;
+        height: 78px;
+    }
+
+    .floating-text {
+        font-size: 17px;
+    }
+
+    .heart {
+        font-size: 125px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="universe"></canvas>
+
+<div class="title">
+    💗 Happy Women's Day 20-10 💗
+</div>
+
+<div class="heart">♥</div>
+
+<button class="music-button" onclick="createFloatingItem()">
+    💕 Gửi thêm yêu thương 💕
+</button>
+
+<script>
+// =====================================
+// 1. NỀN VŨ TRỤ VÀ NGÔI SAO
+// =====================================
+
+var canvas = document.getElementById("universe");
+var ctx = canvas.getContext("2d");
+
+var stars = [];
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    stars = [];
+
+    for (var i = 0; i < 180; i++) {
+        stars.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 2 + 0.3,
+            alpha: Math.random(),
+            speed: Math.random() * 0.02 + 0.005
+        });
+    }
+}
+
+function drawStars() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (var i = 0; i < stars.length; i++) {
+        var s = stars[i];
+
+        s.alpha += s.speed;
+
+        if (s.alpha > 1 || s.alpha < 0.15) {
+            s.speed *= -1;
+        }
+
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255,255,255," + s.alpha + ")";
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = "#e8aaff";
+        ctx.fill();
+    }
+
+    requestAnimationFrame(drawStars);
+}
+
+window.addEventListener("resize", resizeCanvas);
+
+resizeCanvas();
+drawStars();
+
+
+// =====================================
+// 2. CHỮ HIỆN BÊN DƯỚI ẢNH
+// =====================================
+
+var messages = [
+    "💗 20-10 💗",
+    "❤️ anh yeu em ❤️",
+    "🌸 20-10 zuii zẻ 🌸"
+];
+
+
+// =====================================
+// 3. DANH SÁCH ẢNH
+// =====================================
+
+// Đặt các ảnh của bạn cùng thư mục với index.html.
+// Đổi tên ảnh trong danh sách nếu ảnh của bạn có tên khác.
+
+var images = [
+   
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vũ Trụ 20-10 💗</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow: hidden;
+    height: 100vh;
+    background:
+        radial-gradient(ellipse at 50% 50%, #21134b 0%, #0c0925 55%, #02010b 100%);
+    font-family: "Segoe UI", sans-serif;
+    color: white;
+}
+
+/* NỀN VŨ TRỤ */
+#universe {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+/* TIÊU ĐỀ */
+.title {
+    position: fixed;
+    z-index: 3;
+    top: 25px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    padding: 0 12px;
+    color: #ffb9e4;
+    font-size: clamp(24px, 5vw, 42px);
+    font-weight: bold;
+    text-shadow:
+        0 0 10px #ff40c8,
+        0 0 25px #ff40c8,
+        0 0 45px #a44dff;
+    animation: titleGlow 2s infinite alternate;
+}
+
+@keyframes titleGlow {
+    from {
+        text-shadow: 0 0 10px #ff40c8;
+    }
+    to {
+        text-shadow:
+            0 0 20px #ff40c8,
+            0 0 45px #a44dff,
+            0 0 65px #ff70d6;
+    }
+}
+
+/* TRÁI TIM PHÁT SÁNG */
+.heart {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    transform: translate(-50%, -50%);
+    font-size: clamp(100px, 22vw, 190px);
+    color: #ff5fc8;
+    filter:
+        drop-shadow(0 0 10px #ff35b9)
+        drop-shadow(0 0 25px #ff35b9)
+        drop-shadow(0 0 50px #b32dff);
+    animation: heartBeat 1.5s infinite ease-in-out;
+    pointer-events: none;
+}
+
+@keyframes heartBeat {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.12);
+    }
+}
+
+/* ẢNH VÀ CHỮ BAY */
+.floating-item {
+    position: fixed;
+    z-index: 4;
+    bottom: -180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    animation: flyUp linear forwards;
+    pointer-events: none;
+}
+
+.floating-item img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 18px;
+    border: 2px solid #ffb5e8;
+    box-shadow:
+        0 0 12px #ff59cb,
+        0 0 25px #d34bff;
+}
+
+.floating-text {
+    white-space: nowrap;
+    font-size: 22px;
+    font-weight: bold;
+    color: #ffb8e8;
+    text-align: center;
+    text-shadow:
+        0 0 6px #ff39c6,
+        0 0 15px #ff39c6,
+        0 0 25px #a84dff;
+    animation: textGlow 1.5s infinite alternate;
+}
+
+@keyframes textGlow {
+    from {
+        opacity: .8;
+        transform: scale(1);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1.08);
+    }
+}
+
+@keyframes flyUp {
+    0% {
+        transform: translateY(0) rotate(-5deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    50% {
+        transform: translateY(-55vh) rotate(5deg);
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-125vh) rotate(-5deg);
+        opacity: 0;
+    }
+}
+
+/* NÚT BẤM */
+.music-button {
+    position: fixed;
+    z-index: 10;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 13px 24px;
+    border: 1px solid #ffb9e9;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #ff42a9, #963dff);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 20px #ff42a9;
+}
+
+.music-button:hover {
+    box-shadow: 0 0 35px #ff42e8;
+}
+
+/* ĐIỆN THOẠI */
+@media (max-width: 600px) {
+    .floating-item img {
+        width: 78px;
+        height: 78px;
+    }
+
+    .floating-text {
+        font-size: 17px;
+    }
+
+    .heart {
+        font-size: 125px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="universe"></canvas>
+
+<div class="title">
+    💗 Happy Women's Day 20-10 💗
+</div>
+
+<div class="heart">♥</div>
+
+<button class="music-button" onclick="createFloatingItem()">
+    💕 Gửi thêm yêu thương 💕
+</button>
+
+<script>
+// =====================================
+// 1. NỀN VŨ TRỤ VÀ NGÔI SAO
+// =====================================
+
+var canvas = document.getElementById("universe");
+var ctx = canvas.getContext("2d");
+
+var stars = [];
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    stars = [];
+
+    for (var i = 0; i < 180; i++) {
+        stars.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 2 + 0.3,
+            alpha: Math.random(),
+            speed: Math.random() * 0.02 + 0.005
+        });
+    }
+}
+
+function drawStars() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (var i = 0; i < stars.length; i++) {
+        var s = stars[i];
+
+        s.alpha += s.speed;
+
+        if (s.alpha > 1 || s.alpha < 0.15) {
+            s.speed *= -1;
+        }
+
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255,255,255," + s.alpha + ")";
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = "#e8aaff";
+        ctx.fill();
+    }
+
+    requestAnimationFrame(drawStars);
+}
+
+window.addEventListener("resize", resizeCanvas);
+
+resizeCanvas();
+drawStars();
+
+
+// =====================================
+// 2. CHỮ HIỆN BÊN DƯỚI ẢNH
+// =====================================
+
+var messages = [
+    "💗 20-10 💗",
+    "❤️ anh yeu em ❤️",
+    "🌸 20-10 zuii zẻ 🌸"
+];
+
+
+// =====================================
+// 3. DANH SÁCH ẢNH
+// =====================================
+
+// Đặt các ảnh của bạn cùng thư mục với index.html.
+// Đổi tên ảnh trong danh sách nếu ảnh của bạn có tên khác.
+
+var images = [
+    "anh1.jpg",
+    "anh2.jpg",
+    "anh3.jpg",
+    "anh4.jpg",
+    "anh5.jpg",
+    "anh6.jpg"
+];
+
+var imageIndex = 0;
+
+
+// =====================================
+// 4. TẠO ẢNH BAY KÈM CHỮ
+// =====================================
+
+function createFloatingItem() {
+    var item = document.createElement("div");
+    item.className = "floating-item";
+
+    var img = document.createElement("img");
+    img.src = images[imageIndex];
+
+    img.onerror = function() {
+        img.style.display = "none";
+    };
+
+    imageIndex++;
+
+    if (imageIndex >= images.length) {
+        imageIndex = 0;
+    }
+
+    var text = document.createElement("div");
+    text.className = "floating-text";
+
+    var randomIndex = Math.floor(Math.random() * messages.length);
+    text.innerHTML = messages[randomIndex];
+
+    item.appendChild(img);
+    item.appendChild(text);
+
+    item.style.left = Math.random() * 80 + 10 + "vw";
+
+    var duration = 7 + Math.random() * 5;
+    item.style.animationDuration = duration + "s";
+
+    document.body.appendChild(item);
+
+    setTimeout(function() {
+        item.remove();
+    }, duration * 1000);
+}
+
+
+// =====================================
+// 5. TỰ ĐỘNG CHO ẢNH BAY LÊN
+// =====================================
+
+setInterval(function() {
+    createFloatingItem();
+}, 1800);
+
+</script>
+
+</body>
+</html>
+
+];
+
+var imageIndex = 0;
+
+
+// =====================================
+// 4. TẠO ẢNH BAY KÈM CHỮ
+// =====================================
+
+function createFloatingItem() {
+    var item = document.createElement("div");
+    item.className = "floating-item";
+
+    var img = document.createElement("img");
+    img.src = images[imageIndex];
+
+    img.onerror = function() {
+        img.style.display = "none";
+    };
+
+    imageIndex++;
+
+    if (imageIndex >= images.length) {
+        imageIndex = 0;
+    }
+
+    var text = document.createElement("div");
+    text.className = "floating-text";
+
+    var randomIndex = Math.floor(Math.random() * messages.length);
+    text.innerHTML = messages[randomIndex];
+
+    item.appendChild(img);
+    item.appendChild(text);
+
+    item.style.left = Math.random() * 80 + 10 + "vw";
+
+    var duration = 7 + Math.random() * 5;
+    item.style.animationDuration = duration + "s";
+
+    document.body.appendChild(item);
+
+    setTimeout(function() {
+        item.remove();
+    }, duration * 1000);
+}
+
+
+// =====================================
+// 5. TỰ ĐỘNG CHO ẢNH BAY LÊN
+// =====================================
+
+setInterval(function() {
+    createFloatingItem();
+}, 1800);
+
+</script>
+
+</body>
+</html>
